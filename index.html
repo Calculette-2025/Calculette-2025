@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Reclassement</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h2 {
+            text-align: center;
+            color: #28a745;
+            margin-top: 20px;
+        }
+        h4 {
+            text-align: center;
+            color: #111211;
+            margin-top: 20px;
+        }
+        h5 {
+            text-align: center;
+            color: #f52323;
+            margin-top: 20px;
+        }
+        form {
+            background: white;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        input:focus, select:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #resultat {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #resultat h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        #resultat ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #resultat ul li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        #resultat p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        #resultat h2 {
+            color: #28a745;
+            margin-top: 20px;
+        }
+        #resultat h5 {
+            color: #c2281d;
+            margin-top: 20px;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 150px; /* Ajustez la taille selon votre logo */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="logo.jpg" alt="Logo de l'entreprise">
+    </div>
+
+    <h2>Calculette PSE</h2>
+    <h5>Attention, cette calculatrice reste un outil d'estimation</h5>
+
+    <form id="reclassementForm">
+        <label>Date d'entrée chez Eni* :</label>
+        <input type="date" name="date_entree_eni" required>
+
+        <label>Date de début du congé de reclassement* :</label>
+        <input type="date" name="date_conge_reclassement" required>
+
+        <label>Date de naissance :</label>
+        <input type="date" name="date_de_naissance" required>
+
+
+        <label>Etes-vous seul revenu de votre foyer ou RQTH ?* : </label>
+        <select name="rqth" required>
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+
+        <label>Quel est votre salaire brut moyen sur les 12 derniers mois ?* : :</label>
+        <input type="number" name="salaire" step="0.01" required>
+
+        <label>Nombre de jours de CP + RTT restants  ?* :</label>
+        <input type="number" name="rtt" step="0.01" required>
+
+        <label>Prime supplementaire à percevoir sur le solde de tout compte  ?* :</label>
+        <input type="number" name="prime" step="0.01" required>
+
+
+        <label>Avez-vous trouvé un nouvel emploi ?* :</label>
+        <select name="nouvel_emploi" required>
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+
+        <label>Date de début du nouvel emploi** :</label>
+        <input type="date" name="date_nouvel_emploi">
+
+        <label>Votre période d'essai a été arrêtée pour faute lourde ?** :</label>
+        <select name="faute_lourde">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="non">Non</option>
+            <option value="oui">Oui</option>
+        </select>
+
+        <label>Date de fin de la période d'essai*** :</label>
+        <input type="date" name="date_fin_essai">
+
+        <label>Avez-vous créé votre entreprise ?* :</label>
+        <select name="creation_entreprise" required>
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+
+        <label>Date création d'entreprise ** :</label>
+        <input type="date" name="date_entreprise">
+
+        <label>Quel type d'entreprise : micro-entreprise ; autre ? ** :</label>
+        <select name="type_entreprise">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="micro">Micro-entreprise</option>
+            <option value="autre">Autre</option>
+        </select>
+
+        <label>Comptez-vous faire une mobilité géographique ?* :</label>
+        <select name="mobilite_geo">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+        <label>Comptez-vous faire une formation courte ?* :</label>
+        <select name="formation_courte">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+        <label>Comptez-vous faire une formation longue ?*:</label>
+        <select name="formation_longue">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+        <label>Comptez-vous faire une formation pour la création entreprise ?*:</label>
+        <select name="formation_creation_entreprise">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+        <label>Comptez-vous faire une VAE ?* : </label>
+        <select name="vae">
+            <option value="" disabled selected>-- Sélectionnez --</option>
+            <option value="oui">Oui</option>
+            <option value="non">Non</option>
+        </select>
+
+        <button type="submit">Soumettre</button>
+    </form>
+
+    <div id="resultat"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Récupération des éléments concernés
+          const nouvelEmploiSelect = document.querySelector('[name="nouvel_emploi"]');
+          const creationEntrepriseSelect = document.querySelector('[name="creation_entreprise"]');
+          const dateNouvelEmploi = document.querySelector('[name="date_nouvel_emploi"]');
+          const dateFinEssai = document.querySelector('[name="date_fin_essai"]');
+          const dateCreationEntreprise = document.querySelector('[name="date_entreprise"]');
+          const type_entreprise = document.querySelector('[name="type_entreprise"]');
+          const formation_cration_entreprise =  document.querySelector('[name="formation_creation_entreprise"]');
+    
+    
+          function toggleFields() {
+            
+            
+    
+            // Si "Nouvel emploi" est sélectionné
+            if (nouvelEmploiSelect.value =="oui") {
+              // Désactiver la section "Création d'entreprise"
+              creationEntrepriseSelect.value = ""; // Remise à zéro de la sélection
+              creationEntrepriseSelect.disabled = true;
+              formation_cration_entreprise.disabled = true;
+              // Rendre les dates du nouvel emploi obligatoires et activées
+              dateNouvelEmploi.disabled = false;
+              dateFinEssai.disabled = false;
+              dateNouvelEmploi.required = true;
+              dateFinEssai.required = true;
+              type_entreprise.disabled = true;
+            } else {
+              
+              creationEntrepriseSelect.disabled = false;
+              type_entreprise.disabled = false;
+
+              // Si l'utilisateur choisit "Non" ou n'a rien sélectionné, désactiver les dates de nouvel emploi
+              dateNouvelEmploi.value = "";
+              dateFinEssai.value = "";
+              dateNouvelEmploi.disabled = true;
+              dateFinEssai.disabled = true;
+              dateNouvelEmploi.required = false;
+              dateFinEssai.required = false;
+            };
+            
+            
+            // Si "Création d'entreprise" est sélectionné
+            if (creationEntrepriseSelect.value=="oui") {
+              // Désactiver la section "Nouvel emploi"
+              nouvelEmploiSelect.value = "";
+              nouvelEmploiSelect.disabled = true;
+              // Rendre la date de création d'entreprise obligatoire et activée
+              dateCreationEntreprise.disabled = false;
+              dateCreationEntreprise.required = true;
+              type_entreprise.required = true;
+            } else {
+              nouvelEmploiSelect.disabled = false;
+              // Si "Non" ou rien n'est sélectionné pour création, désactiver la date de création
+              dateCreationEntreprise.disabled = true;
+              dateCreationEntreprise.required = false;
+              type_entreprise.disabled = true;
+            }
+          }
+    
+          // Écoute des changements sur les sélections concernées
+          nouvelEmploiSelect.addEventListener("change", toggleFields);
+          creationEntrepriseSelect.addEventListener("change", toggleFields);
+        });
+      </script>
+
+    <script>
+        document.getElementById('reclassementForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+            
+            let formData = new FormData(this);
+            let dateEntree = new Date(formData.get("date_entree_eni"));
+            let dateReclassement = new Date(formData.get("date_conge_reclassement"));
+            let salaire = parseFloat(formData.get("salaire"));
+            let date_de_naissance = new Date(formData.get("date_de_naissance"));
+            let nouvel_emploi = formData.get("nouvel_emploi") === "oui";
+            let faute_lourde = formData.get("faute_lourde") === "oui";
+            let date_fin_essai = formData.get("date_fin_essai") ? new Date(formData.get("date_fin_essai")) : null;
+            let seul_revenu = formData.get("seul_revenu") === "oui";
+            let creation_entreprise = formData.get("creation_entreprise") === "oui";
+            let type_entreprise = formData.get("type_entreprise");
+            let mobilite_geo = formData.get("mobilite_geo") === "oui";
+            let dateCreation_enprise= new Date(formData.get("date_entreprise"));
+            let formation_courte = formData.get("formation_courte") === "oui";
+            let formation_longue = formData.get("formation_longue") === "oui";
+            let formation_creation_entreprise = formData.get("formation_creation_entreprise") === "oui";
+            let vae = formData.get("vae") === "oui";
+            let rqth = formData.get("rqth") === "oui";
+            let rtt = parseFloat(formData.get("rtt"));
+            let prime = parseFloat(formData.get("prime"));
+            let date_nouvel_travail = new Date(formData.get("date_nouvel_emploi"));
+            let date_nouvel_emploi = nouvel_emploi ? date_nouvel_travail : dateCreation_enprise;
+            let age = (dateReclassement - date_de_naissance)/(1000 * 60 * 60 * 24 * 365);
+
+            let plus_50_ans = age > 50 ? "oui" : "non";
+            let indemnite_reclassement = 0;
+            let aide_creation = 0;
+            let aide_mobilite = mobilite_geo ? 5000 : 0;
+            let diff = dateReclassement - dateEntree;
+            // 📌 Calcul de l'ancienneté (en années)
+            let anciennete = diff / (1000 * 60 * 60 * 24 * 365); // Conversion en années
+            let duree_indemnite = 0
+            
+
+            
+            if (plus_50_ans =="oui" || rqth){
+                duree_indemnite = 18 
+                
+            }else{
+                duree_indemnite = 12
+            }
+            let indeminite_reclassemtn_brut = salaire  * duree_indemnite;
+            let indeminite_rtt = (salaire/21.66)*rtt;
+            salaire = salaire * 0.8;
+            let idemnite_sup = 0;
+            let idemnite_sup_cc = 0	
+
+            // 📌 Arrondi selon la règle
+            let decimalPart = anciennete % 1;
+            if (decimalPart >= 0.5) {
+                anciennete = Math.ceil(anciennete); // Arrondi supérieur
+            } else {
+                anciennete = Math.floor(anciennete); // Arrondi inférieur
+            }
+
+            // 📌 Calcul de l'indemnité de reclassement
+           
+            indemnite_reclassement = salaire  * duree_indemnite;
+
+            function calculerIndemnite(salaire, anciennete, age ) {
+                let indemnite = 0;
+
+                // Tranches d'ancienneté
+                if (anciennete <= 5) {
+                    indemnite = (anciennete * 3 / 10);
+                } else if (anciennete <= 10) {
+                    indemnite = (5 * 3 / 10) + ((anciennete - 5) * 4 / 10);
+                } else if (anciennete <= 15) {
+                    indemnite = (5 * 3 / 10) + (5 * 4 / 10) + ((anciennete - 10) * 6 / 10);
+                } else {
+                    indemnite = (5 * 3 / 10) + (5 * 4 / 10) + (5 * 6 / 10) + ((anciennete - 15) * 7 / 10);
+                }
+
+                // Suppléments forfaitaires
+                if (anciennete >= 2 && anciennete < 5) {
+                    indemnite += 2 / 10;
+                } else if (anciennete >= 5 && anciennete < 10) {
+                    indemnite += 1 / 10;
+                }
+
+                // Calcul de l'indemnité brute
+                let indemniteTotale = indemnite * salaire;
+
+                // Plafond de 15 mois de salaire
+                let plafond = 15 * salaire;
+                if (indemniteTotale > plafond) {
+                    indemniteTotale = plafond;
+                }
+
+                // Supplément en cas de licenciement économique
+                if (anciennete >= 2 && age !== null) {
+                    if (age >= 50 && age <= 52) {
+                        indemniteTotale += 2 * salaire;
+                    } else if (age >= 53 && age <= 55) {
+                        indemniteTotale += 3 * salaire;
+                    } else if (age >= 56 && age <= 59) {
+                        indemniteTotale += salaire;
+                    }
+                }
+
+                return indemniteTotale;
+            }
+            
+
+            ideminite_rup_convetionel = calculerIndemnite(salaire, anciennete, age);
+            indeminite_formation_courte = formation_courte ? 8000 : 0;
+            let indeminite_formation_longue = 0;
+
+            
+           
+
+            if (formation_longue && plus_50_ans =="oui") {
+                indeminite_formation_longue = 20000;
+                indeminite_formation_courte = 0
+            }else if (formation_longue && plus_50_ans =="Non") {
+                indeminite_formation_longue = 15000;
+                indeminite_formation_courte = 0
+            }
+
+            let indeminite_va = 0;
+            if (vae && plus_50_ans =="oui") {
+                indeminite_va = 10000;
+            }else if (vae && plus_50_ans =="non") {
+                indeminite_va = 8000;
+            }
+               
+            let indemnite_reclassement_restant = indemnite_reclassement
+
+            if (nouvel_emploi && !faute_lourde){
+                console.log(date_nouvel_emploi)
+                let nb_restant =  date_nouvel_emploi - dateReclassement
+                nb_restant = duree_indemnite - nb_restant/(1000 * 60 * 60 * 24 * 31);
+                indemnite_reclassement_restant = nb_restant * salaire
+            }else if (faute_lourde){
+                indemnite_reclassement_restant = 0
+            }
+
+            let indemnite_reclassement_restant_CC = indemnite_reclassement_restant - indemnite_reclassement_restant * 0.067
+
+            // if (indemnite_reclassement_restant > 94200.00){
+            //     diff_montant = (indemnite_reclassement_restant - 94200.00) *0.067
+            //     indemnite_reclassement_restant_CC = indemnite_reclassement_restant - diff_montant
+            // }
+
+            if (anciennete > 0) {
+                if (plus_50_ans =="oui" || anciennete >= 10) {
+                    idemnite_sup = salaire * 1.5 * anciennete ;
+                } else {
+                    idemnite_sup = salaire * 1 * anciennete ;
+                }
+            }
+
+            if (creation_entreprise) {
+                if (type_entreprise === "micro") {
+                    aide_creation = 8000;
+                } else {
+                    aide_creation = 16000;
+                }
+            }
+            let indeminite_formation_creation_entreprise = 0;
+            if (formation_creation_entreprise) {
+                indeminite_formation_creation_entreprise = 8000;
+            }
+            idemnite_sup_cc = idemnite_sup - idemnite_sup *0.067
+            let ideminite_rup_convetionel_cc =ideminite_rup_convetionel - ideminite_rup_convetionel*0.067
+            if(!creation_entreprise && !nouvel_emploi){
+                indemnite_reclassement_restant_CC = 0
+                indeminite_reclassemtn_brut = "Indisponible"
+                indemnite_reclassement = "Indisponible"
+                indemnite_reclassement_restant = "Indisponible"
+            }
+
+            let total_aides = indemnite_reclassement_restant_CC  + aide_mobilite + idemnite_sup_cc + ideminite_rup_convetionel_cc
+                                 + indeminite_rtt + prime;
+
+            let valorisation_aide = 0;
+
+            if (formation_longue){
+                valorisation_aide =  indeminite_formation_longue + indeminite_va;
+            }else{
+                valorisation_aide = indeminite_formation_courte  + indeminite_formation_creation_entreprise + indeminite_va + aide_creation;
+            }
+
+            
+            if(!creation_entreprise && !nouvel_emploi){
+                indemnite_reclassement_restant_CC = "Indisponible"
+            }
+            
+
+            let output = `<h3>📋 Résumé des Données :</h3><ul>`;
+            formData.forEach((value, key) => {
+                output += `<li><strong>${key} :</strong> ${value}</li>`;
+            });
+
+    
+
+            output += `</ul>`;
+            output += `<h3>📅 Ancienneté Calculée :</h3>`;
+            output += `<p><strong>${anciennete} ans</strong></p>`;
+            output += `<h3>📅 Durée Congé de reclassement :</h3>`;
+            output += `<p><strong>${duree_indemnite} mois</strong></p>`;
+
+            output += `<h3>💰 Calcul de l'Indemnité :</h3>`;
+            output += `<p><strong>Indemnité de reclassement brut :</strong> ${indeminite_reclassemtn_brut} €</p>`;
+            output += `<p><strong>Indemnité de reclassement net avant CC :</strong> ${indemnite_reclassement} €</p>`;
+            output += `<p><strong>Indemnité de reclassement restante net avant CC:</strong> ${indemnite_reclassement_restant} €</p>`;
+            output += `<p><strong>Indemnité de reclassement restante net CC:</strong> ${indemnite_reclassement_restant_CC} €</p>`;
+            output += `<p><strong>Indemnités de rupture (SUPRA) net avant CC:</strong> ${idemnite_sup.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnités de rupture (SUPRA) net CC :</strong> ${idemnite_sup_cc.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnités de rupture conventionnelle net avant CC :</strong> ${ideminite_rup_convetionel.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnités de rupture conventionnelle net CC :</strong> ${ideminite_rup_convetionel_cc.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnités de RTT et CPP :</strong> ${indeminite_rtt.toFixed(2)} €</p>`;
+            output += `<p><strong>Prime supplementaire :</strong> ${prime.toFixed(2)} €</p>`;
+            output += `<p><strong>Prime mobilité :</strong> ${aide_mobilite.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la création d'entreprise :</strong> ${aide_creation.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la Formation courte :</strong> ${indeminite_formation_courte.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la Formation longue :</strong> ${indeminite_formation_longue.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide financière formation création entreprise :</strong> ${indeminite_formation_creation_entreprise.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la VAE  :</strong> ${indeminite_va.toFixed(2)} €</p>`;
+            output += `<h2>🔹 Montant total solde : ${total_aides.toFixed(2)} €</h2>`;
+            output += `<h4> (Indemnité de reclassement restante net CC + Indemnités de rupture (SUPRA) net CC  + Indemnités de rupture conventionnelle net CC + Indemnités de RTT et CPP + Prime supplementaire + Prime mobilité  ) </h4>`;
+            output += `<h2>🔹 Valorisation formations et VAE : ${valorisation_aide.toFixed(2)} €</h2>`;
+            output += `<h4>(Aide à la création d'entreprise + Aide à la Formation courte + Aide à la Formation longue + Aide financière formation création entreprise +  Aide à la VAE )</h4>`;
+
+            document.getElementById("resultat").innerHTML = output;
+        });
+    </script>
+
+</body>
+</html>
