@@ -424,7 +424,7 @@
                
             let indemnite_reclassement_restant = indemnite_reclassement
 
-            if (nouvel_emploi && !faute_lourde){
+            if (nouvel_emploi && !faute_lourde || creation_entreprise){
                 console.log(date_nouvel_emploi)
                 let nb_restant =  date_nouvel_emploi - dateReclassement
                 nb_restant = duree_indemnite - nb_restant/(1000 * 60 * 60 * 24 * 31);
