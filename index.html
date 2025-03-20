@@ -111,7 +111,7 @@
             margin-bottom: 20px;
         }
         .logo-container img {
-            max-width: 150px; /* Ajustez la taille selon votre logo */
+            max-width: 190px; /* Ajustez la taille selon votre logo */
             height: auto;
         }
     </style>
@@ -142,14 +142,11 @@
             <option value="non">Non</option>
         </select>
 
-        <label>Quel est votre salaire brut moyen sur les 12 derniers mois ?* : :</label>
+        <label>Quel est le montant total brut perçu sur les 12 derniers mois ?* : :</label>
         <input type="number" name="salaire" step="0.01" required>
 
         <label>Nombre de jours de CP + RTT restants  ?* :</label>
         <input type="number" name="rtt" step="0.01" required>
-
-        <label>Prime supplementaire à percevoir sur le solde de tout compte  ?* :</label>
-        <input type="number" name="prime" step="0.01" required>
 
 
         <label>Avez-vous trouvé un nouvel emploi ?* :</label>
@@ -168,6 +165,9 @@
             <option value="non">Non</option>
             <option value="oui">Oui</option>
         </select>
+
+        <label>Date de fin nouvel emploi pour faute lourde :</label>
+        <input type="date" name="date_faute_lourde" required>
 
         <label>Date de fin de la période d'essai*** :</label>
         <input type="date" name="date_fin_essai">
@@ -220,7 +220,7 @@
             <option value="non">Non</option>
         </select>
 
-        <button type="submit">Soumettre</button>
+        <button type="submit">Calculer</button>
     </form>
 
     <div id="resultat"></div>
@@ -235,6 +235,8 @@
           const dateCreationEntreprise = document.querySelector('[name="date_entreprise"]');
           const type_entreprise = document.querySelector('[name="type_entreprise"]');
           const formation_cration_entreprise =  document.querySelector('[name="formation_creation_entreprise"]');
+          const date_faute_lourde =  document.querySelector('[name="date_faute_lourde"]');
+          const faute_lourde =  document.querySelector('[name="faute_lourde"]');
     
     
           function toggleFields() {
@@ -249,11 +251,10 @@
               formation_cration_entreprise.disabled = true;
               // Rendre les dates du nouvel emploi obligatoires et activées
               dateNouvelEmploi.disabled = false;
-              dateFinEssai.disabled = false;
               dateNouvelEmploi.required = true;
-              dateFinEssai.required = true;
+              
               type_entreprise.disabled = true;
-            } else {
+            } else  if(nouvelEmploiSelect.value =="non") {
               
               creationEntrepriseSelect.disabled = false;
               type_entreprise.disabled = false;
@@ -284,11 +285,23 @@
               dateCreationEntreprise.required = false;
               type_entreprise.disabled = true;
             }
+
+            if (faute_lourde.value=="oui"){
+                dateFinEssai.disabled = true;
+                date_faute_lourde.disabled = false
+                date_faute_lourde.required = true
+            }else if (faute_lourde.value=="non") {
+
+                dateFinEssai.disabled = false;
+                date_faute_lourde.disabled = true
+                date_faute_lourde.required = false
+            }
           }
     
           // Écoute des changements sur les sélections concernées
           nouvelEmploiSelect.addEventListener("change", toggleFields);
           creationEntrepriseSelect.addEventListener("change", toggleFields);
+          faute_lourde.addEventListener("change", toggleFields);
         });
       </script>
 
@@ -299,7 +312,8 @@
             let formData = new FormData(this);
             let dateEntree = new Date(formData.get("date_entree_eni"));
             let dateReclassement = new Date(formData.get("date_conge_reclassement"));
-            let salaire = parseFloat(formData.get("salaire"));
+            let salaire = parseFloat(formData.get("salaire")) /12;
+            let salaire_brut = parseFloat(formData.get("salaire")) /12;
             let date_de_naissance = new Date(formData.get("date_de_naissance"));
             let nouvel_emploi = formData.get("nouvel_emploi") === "oui";
             let faute_lourde = formData.get("faute_lourde") === "oui";
@@ -315,10 +329,11 @@
             let vae = formData.get("vae") === "oui";
             let rqth = formData.get("rqth") === "oui";
             let rtt = parseFloat(formData.get("rtt"));
-            let prime = parseFloat(formData.get("prime"));
             let date_nouvel_travail = new Date(formData.get("date_nouvel_emploi"));
             let date_nouvel_emploi = nouvel_emploi ? date_nouvel_travail : dateCreation_enprise;
             let age = (dateReclassement - date_de_naissance)/(1000 * 60 * 60 * 24 * 365);
+
+            let date_faute_lourde = new Date(formData.get("date_faute_lourde"));
 
             let plus_50_ans = age > 50 ? "oui" : "non";
             let indemnite_reclassement = 0;
@@ -338,8 +353,9 @@
                 duree_indemnite = 12
             }
             let indeminite_reclassemtn_brut = salaire  * duree_indemnite;
-            let indeminite_rtt = (salaire/21.66)*rtt;
+    
             salaire = salaire * 0.8;
+            let indeminite_rtt = (salaire/21.66)*rtt;
             let idemnite_sup = 0;
             let idemnite_sup_cc = 0	
 
@@ -424,21 +440,25 @@
                
             let indemnite_reclassement_restant = indemnite_reclassement
 
+            let nb_restant = duree_indemnite
+
             if (nouvel_emploi && !faute_lourde || creation_entreprise){
                 console.log(date_nouvel_emploi)
-                let nb_restant =  date_nouvel_emploi - dateReclassement
+                nb_restant =  date_nouvel_emploi - dateReclassement
                 nb_restant = duree_indemnite - nb_restant/(1000 * 60 * 60 * 24 * 31);
                 indemnite_reclassement_restant = nb_restant * salaire
             }else if (faute_lourde){
-                indemnite_reclassement_restant = 0
+                nb_restant =  date_faute_lourde - dateReclassement
+                nb_restant = duree_indemnite - nb_restant/(1000 * 60 * 60 * 24 * 31);
+                indemnite_reclassement_restant = nb_restant * salaire
             }
 
-            let indemnite_reclassement_restant_CC = indemnite_reclassement_restant - indemnite_reclassement_restant * 0.067
+            let indemnite_reclassement_restant_CC = indemnite_reclassement_restant
 
-            // if (indemnite_reclassement_restant > 94200.00){
-            //     diff_montant = (indemnite_reclassement_restant - 94200.00) *0.067
-            //     indemnite_reclassement_restant_CC = indemnite_reclassement_restant - diff_montant
-            // }
+            if (indemnite_reclassement_restant > 94200.00){
+                diff_montant = (indemnite_reclassement_restant - 94200.00) *0.067
+                indemnite_reclassement_restant_CC = indemnite_reclassement_restant - diff_montant
+            }
 
             if (anciennete > 0) {
                 if (plus_50_ans =="oui" || anciennete >= 10) {
@@ -459,24 +479,44 @@
             if (formation_creation_entreprise) {
                 indeminite_formation_creation_entreprise = 8000;
             }
-            idemnite_sup_cc = idemnite_sup - idemnite_sup *0.067
-            let ideminite_rup_convetionel_cc =ideminite_rup_convetionel - ideminite_rup_convetionel*0.067
-            if(!creation_entreprise && !nouvel_emploi){
-                indemnite_reclassement_restant_CC = 0
+            idemnite_sup_cc = idemnite_sup 
+
+            if (idemnite_sup_cc > 94200.00){
+                diff_montant = (idemnite_sup_cc - 94200.00) *0.067
+                idemnite_sup_cc = idemnite_sup_cc - diff_montant
+            }
+
+            let ideminite_rup_convetionel_cc =ideminite_rup_convetionel 
+
+            if (ideminite_rup_convetionel_cc > 94200.00){
+                diff_montant = (ideminite_rup_convetionel_cc - 94200.00) *0.067
+                ideminite_rup_convetionel_cc = ideminite_rup_convetionel_cc - diff_montant
+            }
+
+
+
+            let total_aides = indemnite_reclassement_restant_CC  + idemnite_sup_cc + ideminite_rup_convetionel_cc
+                                 + indeminite_rtt ;
+
+            if(!creation_entreprise && !nouvel_emploi || faute_lourde){
+                indemnite_reclassement_restant_CC = "Indisponible"
                 indeminite_reclassemtn_brut = "Indisponible"
                 indemnite_reclassement = "Indisponible"
                 indemnite_reclassement_restant = "Indisponible"
-            }
-
-            let total_aides = indemnite_reclassement_restant_CC  + aide_mobilite + idemnite_sup_cc + ideminite_rup_convetionel_cc
-                                 + indeminite_rtt + prime;
+                total_aides =  idemnite_sup_cc + ideminite_rup_convetionel_cc
+                                 + indeminite_rtt ;
+            }else if (creation_entreprise || nouvel_emploi || !faute_lourde)   {
+            indemnite_reclassement_restant_CC = indemnite_reclassement_restant_CC.toFixed(2)
+            indeminite_reclassemtn_brut = indeminite_reclassemtn_brut.toFixed(2)
+            indemnite_reclassement = indemnite_reclassement.toFixed(2)
+            indemnite_reclassement_restant = indemnite_reclassement_restant.toFixed(2)}
 
             let valorisation_aide = 0;
 
             if (formation_longue){
-                valorisation_aide =  indeminite_formation_longue + indeminite_va;
+                valorisation_aide =  indeminite_formation_longue + indeminite_va + aide_mobilite;
             }else{
-                valorisation_aide = indeminite_formation_courte  + indeminite_formation_creation_entreprise + indeminite_va + aide_creation;
+                valorisation_aide = indeminite_formation_courte  + indeminite_formation_creation_entreprise + indeminite_va + aide_creation + aide_mobilite;
             }
 
             
@@ -495,30 +535,36 @@
             output += `</ul>`;
             output += `<h3>📅 Ancienneté Calculée :</h3>`;
             output += `<p><strong>${anciennete} ans</strong></p>`;
-            output += `<h3>📅 Durée Congé de reclassement :</h3>`;
+            output += `<h3>📅 Durée CDR initiale :</h3>`;
             output += `<p><strong>${duree_indemnite} mois</strong></p>`;
-
-            output += `<h3>💰 Calcul de l'Indemnité :</h3>`;
-            output += `<p><strong>Indemnité de reclassement brut :</strong> ${indeminite_reclassemtn_brut} €</p>`;
-            output += `<p><strong>Indemnité de reclassement net avant CC :</strong> ${indemnite_reclassement} €</p>`;
-            output += `<p><strong>Indemnité de reclassement restante net avant CC:</strong> ${indemnite_reclassement_restant} €</p>`;
-            output += `<p><strong>Indemnité de reclassement restante net CC:</strong> ${indemnite_reclassement_restant_CC} €</p>`;
-            output += `<p><strong>Indemnités de rupture (SUPRA) net avant CC:</strong> ${idemnite_sup.toFixed(2)} €</p>`;
-            output += `<p><strong>Indemnités de rupture (SUPRA) net CC :</strong> ${idemnite_sup_cc.toFixed(2)} €</p>`;
-            output += `<p><strong>Indemnités de rupture conventionnelle net avant CC :</strong> ${ideminite_rup_convetionel.toFixed(2)} €</p>`;
-            output += `<p><strong>Indemnités de rupture conventionnelle net CC :</strong> ${ideminite_rup_convetionel_cc.toFixed(2)} €</p>`;
-            output += `<p><strong>Indemnités de RTT et CPP :</strong> ${indeminite_rtt.toFixed(2)} €</p>`;
-            output += `<p><strong>Prime supplementaire :</strong> ${prime.toFixed(2)} €</p>`;
+            output += `<h3>📅 Durée CDR restante:</h3>`;
+            output += `<p><strong>${nb_restant} mois</strong></p>`;
+            
+            output += `<h3>Salaire de référence brut mensuel : </h3>`; 
+            output += `<p><strong>${salaire_brut.toFixed(0)} €</strong></p>`;
+            output += `<h3>Salaire de référence net mensuel : </h3>`; 
+            output += `<p><strong>${salaire.toFixed(0)} €</strong></p>`;
+        
+            output += `<h3>💰 Calcul des indemnités :</h3>`;
+            output += `<p><strong>Indemnité de reclassement initial brut :</strong> ${indeminite_reclassemtn_brut} €</p>`;
+            output += `<p><strong>Indemnité de reclassement initial net avant CC :</strong> ${indemnite_reclassement} €</p>`;
+            output += `<p><strong>Indemnité de reclassement rapide net avant CC:</strong> ${indemnite_reclassement_restant} €</p>`;
+            output += `<p><strong>Indemnité de reclassement rapide net CC:</strong> ${indemnite_reclassement_restant_CC} €</p>`;
+            output += `<p><strong>Indemnité de rupture (SUPRA) net avant CC:</strong> ${idemnite_sup.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnité de rupture (SUPRA) net CC :</strong> ${idemnite_sup_cc.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnité de rupture conventionnelle net avant CC :</strong> ${ideminite_rup_convetionel.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnité de rupture conventionnelle net CC :</strong> ${ideminite_rup_convetionel_cc.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnité de RTT et CPP :</strong> ${indeminite_rtt.toFixed(2)} €</p>`;
             output += `<p><strong>Prime mobilité :</strong> ${aide_mobilite.toFixed(2)} €</p>`;
             output += `<p><strong>Aide à la création d'entreprise :</strong> ${aide_creation.toFixed(2)} €</p>`;
-            output += `<p><strong>Aide à la Formation courte :</strong> ${indeminite_formation_courte.toFixed(2)} €</p>`;
-            output += `<p><strong>Aide à la Formation longue :</strong> ${indeminite_formation_longue.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la formation courte :</strong> ${indeminite_formation_courte.toFixed(2)} €</p>`;
+            output += `<p><strong>Aide à la formation longue :</strong> ${indeminite_formation_longue.toFixed(2)} €</p>`;
             output += `<p><strong>Aide financière formation création entreprise :</strong> ${indeminite_formation_creation_entreprise.toFixed(2)} €</p>`;
             output += `<p><strong>Aide à la VAE  :</strong> ${indeminite_va.toFixed(2)} €</p>`;
             output += `<h2>🔹 Montant total solde : ${total_aides.toFixed(2)} €</h2>`;
-            output += `<h4> (Indemnité de reclassement restante net CC + Indemnités de rupture (SUPRA) net CC  + Indemnités de rupture conventionnelle net CC + Indemnités de RTT et CPP + Prime supplementaire + Prime mobilité  ) </h4>`;
-            output += `<h2>🔹 Valorisation formations et VAE : ${valorisation_aide.toFixed(2)} €</h2>`;
-            output += `<h4>(Aide à la création d'entreprise + Aide à la Formation courte + Aide à la Formation longue + Aide financière formation création entreprise +  Aide à la VAE )</h4>`;
+            output += `<h4> (Indemnité de reclassement rapide net CC + Indemnités de rupture (SUPRA) net CC  + Indemnités de rupture conventionnelle net CC + Indemnités de RTT et CPP   ) </h4>`;
+            output += `<h2>🔹 Valorisation formations, mobilité et VAE : ${valorisation_aide.toFixed(2)} €</h2>`;
+            output += `<h4>(Aide à la création d'entreprise + Aide à la formation courte + Aide à la formation longue + Aide financière formation création entreprise +  Aide à la VAE  + Prime mobilité)</h4>`;
 
             document.getElementById("resultat").innerHTML = output;
         });
