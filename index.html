@@ -252,16 +252,22 @@
               // Rendre les dates du nouvel emploi obligatoires et activées
               dateNouvelEmploi.disabled = false;
               dateNouvelEmploi.required = true;
+              date_faute_lourde.disabled = false;
+              faute_lourde.disabled = false
               
               type_entreprise.disabled = true;
             } else  if(nouvelEmploiSelect.value =="non") {
               
               creationEntrepriseSelect.disabled = false;
               type_entreprise.disabled = false;
+              date_faute_lourde.disabled = true;
+              faute_lourde.disabled = true;
+              
 
               // Si l'utilisateur choisit "Non" ou n'a rien sélectionné, désactiver les dates de nouvel emploi
               dateNouvelEmploi.value = "";
               dateFinEssai.value = "";
+              dateFinEssai.disabled = true;
               dateNouvelEmploi.disabled = true;
               dateFinEssai.disabled = true;
               dateNouvelEmploi.required = false;
@@ -500,15 +506,11 @@
 
             if(!creation_entreprise && !nouvel_emploi || faute_lourde){
                 indemnite_reclassement_restant_CC = "Indisponible"
-                indeminite_reclassemtn_brut = "Indisponible"
-                indemnite_reclassement = "Indisponible"
                 indemnite_reclassement_restant = "Indisponible"
                 total_aides =  idemnite_sup_cc + ideminite_rup_convetionel_cc
                                  + indeminite_rtt ;
             }else if (creation_entreprise || nouvel_emploi || !faute_lourde)   {
             indemnite_reclassement_restant_CC = indemnite_reclassement_restant_CC.toFixed(2)
-            indeminite_reclassemtn_brut = indeminite_reclassemtn_brut.toFixed(2)
-            indemnite_reclassement = indemnite_reclassement.toFixed(2)
             indemnite_reclassement_restant = indemnite_reclassement_restant.toFixed(2)}
 
             let valorisation_aide = 0;
@@ -538,16 +540,15 @@
             output += `<h3>📅 Durée CDR initiale :</h3>`;
             output += `<p><strong>${duree_indemnite} mois</strong></p>`;
             output += `<h3>📅 Durée CDR restante:</h3>`;
-            output += `<p><strong>${nb_restant} mois</strong></p>`;
+            output += `<p><strong>${nb_restant.toFixed(0)} mois</strong></p>`;
             
             output += `<h3>Salaire de référence brut mensuel : </h3>`; 
             output += `<p><strong>${salaire_brut.toFixed(0)} €</strong></p>`;
-            output += `<h3>Salaire de référence net mensuel : </h3>`; 
-            output += `<p><strong>${salaire.toFixed(0)} €</strong></p>`;
+
         
             output += `<h3>💰 Calcul des indemnités :</h3>`;
-            output += `<p><strong>Indemnité de reclassement initial brut :</strong> ${indeminite_reclassemtn_brut} €</p>`;
-            output += `<p><strong>Indemnité de reclassement initial net avant CC :</strong> ${indemnite_reclassement} €</p>`;
+            output += `<p><strong>Indemnité de reclassement initial brut :</strong> ${indeminite_reclassemtn_brut.toFixed(2)} €</p>`;
+            output += `<p><strong>Indemnité de reclassement initial net avant CC :</strong> ${indemnite_reclassement.toFixed(2)} €</p>`;
             output += `<p><strong>Indemnité de reclassement rapide net avant CC:</strong> ${indemnite_reclassement_restant} €</p>`;
             output += `<p><strong>Indemnité de reclassement rapide net CC:</strong> ${indemnite_reclassement_restant_CC} €</p>`;
             output += `<p><strong>Indemnité de rupture (SUPRA) net avant CC:</strong> ${idemnite_sup.toFixed(2)} €</p>`;
